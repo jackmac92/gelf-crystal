@@ -9,7 +9,7 @@ module GELF
 
     def initialize(host, port, @max_size = :wan)
       @sender = UdpSender.new(host, port)
-      @level = Logger::Severity::INFO
+      @level = ::Logger::INFO
     end
 
     def max_chunk_size
