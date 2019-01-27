@@ -66,7 +66,7 @@ module GELF
       data = serialize_message(message)
 
       if data.size > max_chunk_size
-        msg_id = SecureRandom.hex(4)
+        msg_id = Random::Secure.hex(4)
         num_slices = (data.size / max_chunk_size.to_f).ceil.to_i
 
         num_slices.times do |index|
