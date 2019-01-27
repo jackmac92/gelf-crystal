@@ -5,3 +5,5 @@ authors:
   - Benoist <benoist.claassen@gmail.com>
 
 license: MIT
+
+crystal: 0.25.1
