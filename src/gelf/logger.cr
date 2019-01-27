@@ -28,19 +28,19 @@ module GELF
 
     {% for level in ["DEBUG", "INFO", "WARN", "ERROR", "FATAL", "UNKNOWN"] %}
       def {{level.id.downcase}}(message : HashType, progname : String? = nil)
-        add(Logger::Severity::{{level.id}}, message, progname)
+        add(::Logger::{{level.id}}, message, progname)
       end
 
       def {{level.id.downcase}}(message : String, progname : String? = nil)
-        add(Logger::Severity::{{level.id}}, message, progname)
+        add(::Logger::Severity::{{level.id}}, message, progname)
       end
 
       def {{level.id.downcase}}(progname : String? = nil)
-          add(Logger::Severity::{{level.id}}, yield, progname)
+          add(::Logger::Severity::{{level.id}}, yield, progname)
       end
 
       def {{level.id.downcase}}?
-        Logger::Severity::{{level.id}} >= level
+        ::Logger::{{level.id}} >= level
       end
     {% end %}
 
