@@ -5,7 +5,7 @@ module GELF
 
     property! facility : String
     property! host : String
-    property level : JSON::Any
+    property level : ::Logger::Severity
 
     def initialize(host, port, @max_size = :wan)
       @sender = UdpSender.new(host, port)
