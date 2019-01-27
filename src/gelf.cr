@@ -1,7 +1,7 @@
 require "zlib"
 require "json"
 require "socket"
-require "secure_random"
+require "random"
 require "logger"
 
 module GELF
