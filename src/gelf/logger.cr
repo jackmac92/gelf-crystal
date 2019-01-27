@@ -5,11 +5,11 @@ module GELF
 
     property! facility : String
     property! host : String
-    property level : Logger::Severity
+    property level : JSON::Any
 
     def initialize(host, port, @max_size = :wan)
       @sender = UdpSender.new(host, port)
-      @level = ::Logger::INFO
+      @level = Logger::Severity::INFO
     end
 
     def max_chunk_size
