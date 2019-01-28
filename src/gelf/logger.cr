@@ -1,7 +1,7 @@
 module GELF
   class Logger
-    alias HashType = Hash(String, (String | Int::Signed | Int::Unsigned | Float64 | Bool))
-    alias MessageType = (Hash(String, (String | Int::Signed | Int::Unsigned | Float64 | Bool)) | String)
+    alias HashType = Hash(String, (String | Int32 | UInt32 | Float64 | Bool))
+    alias MessageType = (Hash(String, (String | Int32 | UInt32 | Float64 | Bool)) | String)
 
     property! facility : String
     property! host : String
@@ -44,22 +44,22 @@ module GELF
       end
     {% end %}
 
-    private def add(level, message : Hash(String, (String | Int::Signed | Int::Unsigned | Float64 | Bool)), progname : String? = nil)
+    private def add(level, message : Hash(String, (String | Int32 | UInt32 | Float64 | Bool)), progname : String? = nil)
       notify_with_level(level, message.merge({"_facility" => progname || facility}))
     end
 
     private def add(level, message : String, progname : String? = nil)
-      hash = {} of String => (String | Int::Signed | Int::Unsigned | Float64 | Bool)
+      hash = {} of String => (String | Int32 | UInt32 | Float64 | Bool)
       hash["short_message"] = message
       add(level, hash, progname)
     end
 
-    private def notify_with_level(level, message : Hash(String, (String | Int::Signed | Int::Unsigned | Float64 | Bool)))
+    private def notify_with_level(level, message : Hash(String, (String | Int32 | UInt32 | Float64 | Bool)))
       return if level < @level
 
       message["version"] = "1.1"
       message["host"] = host
-      message["level"] = GELF::LOGGER_MAPPING[level]
+      message["level"] = GELF::LOGGER_MAPPING[level].to_s
       message["timestamp"] = "%f" % Time.now.to_unix_f
       message["short_message"] ||= "Message must be set!"
 
