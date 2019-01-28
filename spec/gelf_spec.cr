@@ -32,8 +32,8 @@ class UDPListener
 
   def get_json
     slice = read_buffer
-    io = MemoryIO.new(slice)
-    inflate = Zlib::Inflate.new(io)
+    io = IO::Memory.new(slice)
+    inflate = Zlib::Reader.new(io)
     str = String::Builder.build do |builder|
       IO.copy(inflate, builder)
     end
@@ -57,26 +57,26 @@ describe GELF do
       slice = listener.read_buffer
       slice[0, 2].should eq Slice(UInt8).new(UInt8[0x1e, 0x0F].to_unsafe, 2)
       message_id = slice[2, 8]
-      slice.at(10).should eq 0 # index
-      slice.at(11).should eq 2 # num
+      slice.[10].should eq 0 # index
+      slice.[11].should eq 2 # num
 
       data1 = slice + 12
 
       slice = listener.read_buffer
       slice[0, 2].should eq Slice(UInt8).new(UInt8[0x1e, 0x0F].to_unsafe, 2)
-      slice.at(10).should eq 1 # index
-      slice.at(11).should eq 2 # num
+      slice.[10].should eq 1 # index
+      slice.[11].should eq 2 # num
 
       message_id.should eq slice[2, 8]
 
       data2 = slice + 12
 
-      io = MemoryIO.new
+      io = IO::Memory.new
       io.write(data1)
       io.write(data2)
       io.rewind
 
-      inflate = Zlib::Inflate.new(io)
+      inflate = Zlib::Reader.new(io)
       str = String::Builder.build do |builder|
         IO.copy(inflate, builder)
       end
