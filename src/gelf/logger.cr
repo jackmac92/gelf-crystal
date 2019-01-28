@@ -60,7 +60,7 @@ module GELF
       message["version"] = "1.1"
       message["host"] = host
       message["level"] = GELF::LOGGER_MAPPING[level]
-      message["timestamp"] = "%f" % Time.now.epoch_f
+      message["timestamp"] = "%f" % Time.now.to_unix_f
       message["short_message"] ||= "Message must be set!"
 
       data = serialize_message(message)
@@ -70,7 +70,7 @@ module GELF
         num_slices = (data.size / max_chunk_size.to_f).ceil.to_i
 
         num_slices.times do |index|
-          io = MemoryIO.new
+          io = IO::Memory.new
 
           # Magic bytes
           io.write_byte(0x1e_u8)
@@ -99,8 +99,8 @@ module GELF
     end
 
     private def serialize_message(message)
-      io = MemoryIO.new
-      deflater = Zlib::Deflate.new(io)
+      io = IO::Memory.new
+      deflater = Zlib::Writer.new(io)
       json = message.to_json
       deflater.print(json)
       deflater.close
